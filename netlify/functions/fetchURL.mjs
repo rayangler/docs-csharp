@@ -2,29 +2,28 @@ import axios from 'axios';
 
 async function handleURL({ url, ifModifiedSince }) {
   try {
-    // const headers = {};
+    const headers = {};
 
-    // if (ifModifiedSince) {
-    //   headers['If-Modified-Since'] = ifModifiedSince;
-    // }
+    if (ifModifiedSince) {
+      headers['If-Modified-Since'] = ifModifiedSince;
+    }
 
-    // const { data, status } = await axios.get(url, {
-    //   headers,
-    //   // 300 status is resolved as 200 by axios for some reason
-    //   validateStatus: (status) => {
-    //     console.log(`Returning status ${status} for ${url}`);
-    //     return status < 400;
-    //   },
-    // });
+    headers['Cache-Control'] = 'max-age=300'
+
+    const { data, status } = await axios.get(url, {
+      headers,
+      // 300 status is resolved as 200 by axios for some reason
+      validateStatus: (status) => {
+        console.log(`Returning status ${status} for ${url}`);
+        return status < 400;
+      },
+    });
 
     // if (status === 304) {
     //   return new Response(null, { status });
     // }
 
-    // return new Response(data, { status });
-    
-    // For testing purposes, always return 304
-    return new Response(null, { status: 304 });
+    return new Response(data, { status });
   } catch (err) {
     console.log({ err });
     
@@ -46,7 +45,7 @@ export default async (_req, context) => {
   console.log({ context });
 
   if (url) {
-    return await handleURL({url, ifModifiedSince});
+    return await handleURL({ url, ifModifiedSince });
   }
 
   return new Response('', { status: 200 });
