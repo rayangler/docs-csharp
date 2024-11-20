@@ -8,7 +8,10 @@ async function handleURL({url, ifModifiedSince}) {
       headers['If-Modified-Since'] = ifModifiedSince;
     }
 
-    const res = await axios.get(url, { headers });
+    const res = await axios.get(url, {
+      // 300 status is resolved as 200 by axios for some reason
+      validateStatus: (status) => status < 400,
+    });
     return new Response(res.data, { status: res.status });
   } catch (err) {
     console.log({ err });
