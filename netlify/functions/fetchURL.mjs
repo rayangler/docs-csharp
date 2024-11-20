@@ -2,28 +2,28 @@ import axios from 'axios';
 
 async function handleURL({ url, ifModifiedSince }) {
   try {
-    const headers = {};
+    const reqHeaders = {};
+    // reqHeaders['Cache-Control'] = 'public, max-age=300'
 
     if (ifModifiedSince) {
-      headers['If-Modified-Since'] = ifModifiedSince;
+      reqHeaders['If-Modified-Since'] = ifModifiedSince;
     }
 
-    headers['Cache-Control'] = 'max-age=300'
-
     const { data, status } = await axios.get(url, {
-      headers,
-      // 300 status is resolved as 200 by axios for some reason
+      headers: reqHeaders,
+      // Throw error whenever response status >= 400
       validateStatus: (status) => {
         console.log(`Returning status ${status} for ${url}`);
         return status < 400;
       },
     });
 
-    // if (status === 304) {
-    //   return new Response(null, { status });
-    // }
-
-    return new Response(data, { status });
+    return new Response(data, { 
+      status, 
+      headers: {
+        'Cache-Control': 'public, max-age=300',
+      },
+    });
   } catch (err) {
     console.log({ err });
     
@@ -41,7 +41,6 @@ export default async (_req, context) => {
   // https://docs.netlify.com/platform/caching/#vary-by-header
   const ifModifiedSince = params.get('ifModifiedSince');
 
-  console.log({ url });
   console.log({ context });
 
   if (url) {
