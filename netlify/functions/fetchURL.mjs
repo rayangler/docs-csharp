@@ -1,15 +1,11 @@
 import axios from 'axios';
 
-async function handleURL(url, receivedHeaders) {
+async function handleURL({url, ifModifiedSince}) {
   try {
     const headers = {};
 
-    // Allowlist of headers
-    const ifModifiedSinceKey = 'If-Modified-Since';
-    const ifModifiedSinceHeader = receivedHeaders?.[ifModifiedSinceKey];
-    console.log({ ifModifiedSinceHeader, receivedHeaders });
-    if (ifModifiedSinceHeader) {
-      headers[ifModifiedSinceKey] = ifModifiedSinceHeader;
+    if (ifModifiedSince) {
+      headers['If-Modified-Since'] = ifModifiedSince;
     }
 
     const res = await axios.get(url, { headers });
@@ -20,16 +16,18 @@ async function handleURL(url, receivedHeaders) {
   }
 }
 
-export default async (req, context) => {
+export default async (_req, context) => {
   const params = context.url.searchParams;
   const url = params.get("url");
-  const { headers } = req;
+  // Netlify does not seem to allow If-Modified-Since header, so we have to receive it differently
+  // https://docs.netlify.com/platform/caching/#vary-by-header
+  const ifModifiedSince = params.get("ifModifiedSince");
 
   console.log({ url });
   console.log({ context });
 
   if (url) {
-    return await handleURL(url, headers);
+    return await handleURL({url, ifModifiedSince});
   }
 
   return new Response('', { status: 200 });
