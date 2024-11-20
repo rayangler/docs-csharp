@@ -9,6 +9,7 @@ async function handleURL({url, ifModifiedSince}) {
     }
 
     const res = await axios.get(url, {
+      headers,
       // 300 status is resolved as 200 by axios for some reason
       validateStatus: (status) => status < 400,
     });
