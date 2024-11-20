@@ -7,6 +7,7 @@ async function handleURL(url, receivedHeaders) {
     // Allowlist of headers
     const ifModifiedSinceKey = 'If-Modified-Since';
     const ifModifiedSinceHeader = receivedHeaders?.[ifModifiedSinceKey];
+    console.log({ ifModifiedSinceHeader, receivedHeaders });
     if (ifModifiedSinceHeader) {
       headers[ifModifiedSinceKey] = ifModifiedSinceHeader;
     }
