@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-async function handleURL({url, ifModifiedSince}) {
+async function handleURL({ url, ifModifiedSince }) {
   try {
     const headers = {};
 
@@ -11,7 +11,10 @@ async function handleURL({url, ifModifiedSince}) {
     const { data, status } = await axios.get(url, {
       headers,
       // 300 status is resolved as 200 by axios for some reason
-      validateStatus: (status) => status < 400,
+      validateStatus: (status) => {
+        console.log(`Returning status ${status} for ${url}`);
+        return status < 400;
+      },
     });
 
     if (status === 304) {
