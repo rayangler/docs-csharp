@@ -6,13 +6,12 @@ const fetchURL = async (url) => {
 };
 
 export default async (_req, context) => {
-  const { url } = context.params;
+  const { url } = context.url.searchParams;
 
   let retBody = '';
   let retStatus = 200;
 
   console.log({ url });
-  console.log({ params: context.params });
   console.log({ context });
 
   if (url) {
