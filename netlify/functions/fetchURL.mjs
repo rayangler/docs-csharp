@@ -6,7 +6,8 @@ const fetchURL = async (url) => {
 };
 
 export default async (_req, context) => {
-  const { url } = context.url.searchParams;
+  const params = context.url.searchParams;
+  const url = params.get("url");
 
   let retBody = '';
   let retStatus = 200;
