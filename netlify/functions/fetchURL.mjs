@@ -7,24 +7,24 @@ const fetchURL = async (url) => {
 
 export default async (_req, context) => {
   const { url } = context.params;
-  const returnValue = {
-    statusCode: 500,
-    body: '',
-  };
+
+  let retBody = '';
+  let retStatus = 200;
 
   console.log({ url });
   console.log({ params: context.params });
+  console.log({ context });
 
   if (url) {
     try {
       const data = await fetchURL(url);
-      returnValue.statusCode = 200;
-      returnValue.body = data;
+      retStatus = 200;
+      retBody = data;
     } catch (err) {
       console.log({ err });
-      returnValue.statusCode = 400
+      retStatus = 400
     }
   }
 
-  return returnValue;
+  return new Response(retBody, { status: retStatus });
 }
