@@ -20,7 +20,7 @@ async function handleURL({ url, ifModifiedSince }) {
     return new Response(data, { 
       status, 
       headers: {
-        'Cache-Control': 'public, max-age=300, durable=300',
+        'Cache-Control': 'public, durable, max-age=300',
       },
     });
   } catch (err) {
