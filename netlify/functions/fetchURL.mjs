@@ -3,7 +3,6 @@ import axios from 'axios';
 async function handleURL({ url, ifModifiedSince }) {
   try {
     const reqHeaders = {};
-    // reqHeaders['Cache-Control'] = 'public, max-age=300'
 
     if (ifModifiedSince) {
       reqHeaders['If-Modified-Since'] = ifModifiedSince;
@@ -21,7 +20,7 @@ async function handleURL({ url, ifModifiedSince }) {
     return new Response(data, { 
       status, 
       headers: {
-        'Cache-Control': 'public, max-age=300',
+        'Cache-Control': 'public, max-age=300, durable=300',
       },
     });
   } catch (err) {
